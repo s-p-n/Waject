@@ -55,10 +55,4 @@ foo.mk({
 
 
 
-the 'mk' method takes 4 arguments. The first is the either an object representation of the arguments or the property. The second argument is the value for that property (note that mk will overwrite the property if it exists, so you must pass the value if you want to keep it). The third value is the setter for that property, and the forth and last value is the getter for the given propery.
-
-
-Getters provide 2 arguments: the object they are inside of and the property name.
-Setters provide 3 arguments: the object they are inside of, the property name, and the new value. Note that you may access the current value (it hasn't been overwritten yet!) before it gets set using the previous 2 arguments.
-
-Contact me if you have any questions.
+the 'mk' method takes 4 arguments. The first is the either an object representation of the arguments or the property. The second argument is the value for that property (note that mk will overwrite the property if it exists, so you must pass the value if you want to keep it). 
