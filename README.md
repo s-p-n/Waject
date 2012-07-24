@@ -48,7 +48,7 @@ alternatively,
 	foo.mk({
 
 		property: 'fruit',
-		value: o.fruit,
+		value: foo.fruit,
 		got: function (o, prop) {
 			console.log(prop + " touched!");
 		},
