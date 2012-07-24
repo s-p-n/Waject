@@ -15,7 +15,7 @@ Use it if you dare (It's good if you don't over-do it)! There are some example f
 
 There are two ways to make a waject. Both ways use the 'waject' function. Here's the simplest way:
 
-  var foo = waject();
+	var foo = waject();
 
 
 Another option is to call waject with the first argument an object to watch on:
@@ -33,7 +33,7 @@ You can also call the waject with setters and getters:
 
 Once you have a waject, you can use the mk() method to do stuff with the data:
 
-  waject().mk(ObjectForm/PROPERTY, VALUE, SETTER, GETTER);
+	waject().mk(ObjectForm/PROPERTY, VALUE, SETTER, GETTER);
 
 The foo.mk method will surely come in handy. 
 	foo.mk("fruit", function (obj, prop) {
