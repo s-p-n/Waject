@@ -11,7 +11,7 @@ PS: By nature, it's recursive so it doesn't like circulars and it's not very che
 
 Use it if you dare (It's good if you don't over-do it)! There are some example files.
 
-  waject([OBJECT], [GETTER], [SETTER]);
+	waject([OBJECT], [GETTER], [SETTER]);
 
 There are two ways to make a waject. Both ways use the 'waject' function. Here's the simplest way:
 
@@ -20,44 +20,44 @@ There are two ways to make a waject. Both ways use the 'waject' function. Here's
 
 Another option is to call waject with the first argument an object to watch on:
 
-  var foo = {"fruit": ['apples', 'oranges', 'pears'], animals_alive: true};
+	var foo = {"fruit": ['apples', 'oranges', 'pears'], animals_alive: true};
 
-  foo = waject(foo); // overwrites foo with a waject of itself. Yeeha!
+	foo = waject(foo); // overwrites foo with a waject of itself. Yeeha!
 
 You can also call the waject with setters and getters:
-  foo = waject(foo, function (obj, prop, val) {
-    console.log("Object:", obj);
-  	console.log("Property:", prop);
-  	console.log("Value:", val);
-  });
+	foo = waject(foo, function (obj, prop, val) {
+		console.log("Object:", obj);
+		console.log("Property:", prop);
+		console.log("Value:", val);
+	});
 
 Once you have a waject, you can use the mk() method to do stuff with the data:
 
   waject().mk(ObjectForm/PROPERTY, VALUE, SETTER, GETTER);
 
 The foo.mk method will surely come in handy. 
-  foo.mk("fruit", function (obj, prop) {
-  	console.log(prop + " touched!");
-  });
-  
-  foo.fruit[2]; //fruit touched!
-  // apples
+	foo.mk("fruit", function (obj, prop) {
+		console.log(prop + " touched!");
+	});
+
+	foo.fruit[2]; //fruit touched!
+	// apples
 
 alternatively,
 
-  foo.mk({
-  
-  	property: 'fruit',
-    value: o.fruit,
-  	got: function (o, prop) {
-  		console.log(prop + " touched!");
-  	},
-  	preset: function (o, prop, val) {
-  		var old_val = o[prop];
-  		console.log(prop + " changed from " + old_val + " to " + val);
-  	}
-    
-  });
+	foo.mk({
+
+		property: 'fruit',
+		value: o.fruit,
+		got: function (o, prop) {
+			console.log(prop + " touched!");
+		},
+		preset: function (o, prop, val) {
+			var old_val = o[prop];
+			console.log(prop + " changed from " + old_val + " to " + val);
+		}
+
+	});
 
 
 
