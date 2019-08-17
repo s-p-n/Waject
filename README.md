@@ -1,13 +1,13 @@
 Waject
 ======
 
-Monitor every move an object makes! Did a property change? Did a somebody reference this property? Did this certain method get called?
+Monitor every move an object makes! Did a property change? Did somebody reference this property? Did a method get called?
 
 Are these questions you are asking your code? If so, Waject is for you.
 
-Seriously though. Waject is a very simple way to monitor objects recursively in javascript. It works by applying getters and setters on every property and method in the object's emutable prototype chain, and also running the waject again on interior objects- so you can manage events on those, too. Waject is recursive and was designed for Node.JS library development. I'm sharing this with everyone because.. Well it's already on the internet but GitHub is a nice official spot for it.
+Seriously though. Waject is a very simple way to monitor objects recursively in javascript. It works by applying getters and setters on every property and method in the object's emutable prototype chain, and also running the waject again on interior objects- so you can manage events on those, too. Waject is recursive and was designed for Browser and Node.JS library development. I'm sharing this with everyone because.. Well it's already on the internet but GitHub is a nice official spot for it.
 
-PS: By nature, it's recursive so it doesn't like circulars and it's not very cheap applying methods on every get/set in a large stack- so use this sparingly. 
+PS: By nature, Waject's recursive so it doesn't like circulars and it's not very cheap applying methods on every get/set in a large stack- so use this sparingly. 
 
 Use it if you dare (It's good if you don't over-do it)! There are some example files.
 
@@ -31,9 +31,15 @@ You can also call the waject with setters and getters:
 		console.log("Value:", val);
 	});
 
-Once you have a waject, you can use the mk() method to do stuff with the data:
+Once you have a waject, you can use the mk() method to do stuff when the data changes:
 
-	waject().mk(ObjectForm/PROPERTY, VALUE, SETTER, GETTER);
+	waject().mk(PROPERTY, VALUE, SETTER, GETTER);
+	// or
+	waject().mk({property: ...,
+		value: ...,
+		got: ...,
+		preset: ...
+	});
 
 The foo.mk method will surely come in handy. 
 	foo.mk("fruit", function (obj, prop) {
@@ -61,7 +67,7 @@ alternatively,
 
 
 
-the 'mk' method takes 4 arguments. The first is the either an object representation of the arguments or the property. The second argument is the value for that propert The third value is the setter for that property, and the forth and last value is the getter for the given propery.
+the 'mk' method takes 4 arguments. The first is the either an object representation of the arguments or the property. The second argument is the value for that propert The third value is the setter for that property, and the fourth and last value is the getter for the given propery.
 
 
 Getters provide 2 arguments: the object they are inside of and the property name.
