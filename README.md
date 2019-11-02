@@ -1,5 +1,5 @@
 # What is a Waject?
-`waject()` is a JavaScript library for managing state. The version used on *Blood and Sand* is upgraded to be more modern by utilizing **Proxy**, and is not documented anywhere but here as of this writing.
+`waject()` is a JavaScript library for managing state. 
 
 The `waject` constructor has extensions that may be defined to add functionality to future calls to `waject`. Extensions do not affect wajects created prior to an extension definition.
 
@@ -26,15 +26,15 @@ A target object to wrap with `Proxy`. It can be any sort of object, including a 
 A newly created Proxy with all defined extensions attached.
 
 ##### Example:
-```
+```JavaScript
 // Create a waject
 let example = waject({
     message: "hello, world"
 });
 
 // Listen for "set" change on "message"
-example.on("set", "message", (target, property, value) => {
-    console.log(property, "changed to", value);
+example.on("set", "message", result => {
+    console.log(property, "changed to", result.value);
 });
 
 // Change "message", triggering a "set" occurrence
@@ -76,7 +76,7 @@ Extensions are used to add non-enumerable, non-configurable methods bound to fut
 Internally, extensions are stored in an object, `extensions`, with the `interceptProperty` as the property name, and the extension's function as the value bound to a waject instance.
 
 **Source code:**
-```
+```JavaScript
     let extensions = {};
 
     for (let interceptProperty in this.constructor.extensions) {

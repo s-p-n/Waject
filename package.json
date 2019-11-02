@@ -1,0 +1,25 @@
+{
+  "name": "waject",
+  "version": "2.0.0",
+  "description": "JavaScript library for managing state.",
+  "main": "waject.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s-p-n/waject.git"
+  },
+  "keywords": [
+    "state"
+  ],
+  "author": "Spencer A. Lockhart <slockhartbiz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/s-p-n/waject/issues"
+  },
+  "homepage": "https://github.com/s-p-n/waject#readme"
+}
