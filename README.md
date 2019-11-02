@@ -1,76 +1,87 @@
-Waject
-======
+# What is a Waject?
+`waject()` is a JavaScript library for managing state. The version used on *Blood and Sand* is upgraded to be more modern by utilizing **Proxy**, and is not documented anywhere but here as of this writing.
 
-Monitor every move an object makes! Did a property change? Did somebody reference this property? Did a method get called?
+The `waject` constructor has extensions that may be defined to add functionality to future calls to `waject`. Extensions do not affect wajects created prior to an extension definition.
 
-Are these questions you are asking your code? If so, Waject is for you.
+## Purpose
+`waject` is an extendable function that converts a target object into a proxy. The returned proxy may then be used to listen for changes on `get` or `set` occurrences. 
 
-Seriously though. Waject is a very simple way to monitor objects recursively in javascript. It works by applying getters and setters on every property and method in the object's emutable prototype chain, and also running the waject again on interior objects- so you can manage events on those, too. Waject is recursive and was designed for Browser and Node.JS library development. I'm sharing this with everyone because.. Well it's already on the internet but GitHub is a nice official spot for it.
+**Listening on `set` occurrences is useful:**
+* for keeping HTML elements in sync with objects.
+* for keeping server-side objects in sync with client-side objects.
+* for objects which contain data that, when changed, should have side-effects on other data in the same object or outside of the object.
 
-PS: By nature, Waject's recursive so it doesn't like circulars and it's not very cheap applying methods on every get/set in a large stack- so use this sparingly. 
+**Listening on `get` occurrences is useful:**
+* for data that is built using an algorithm.
 
-Use it if you dare (It's good if you don't over-do it)! There are some example files.
+# Syntax
+> `waject(target)`
 
-	waject([OBJECT], [GETTER], [SETTER]);
+#### Parameters
+> *`Object`*__`target`__
 
-There are two ways to make a waject. Both ways use the 'waject' function. Here's the simplest way:
+A target object to wrap with `Proxy`. It can be any sort of object, including a native array, a function or even another proxy.
 
-	var foo = waject();
+#### Return value
+A newly created Proxy with all defined extensions attached.
 
+##### Example:
+```
+// Create a waject
+let example = waject({
+    message: "hello, world"
+});
 
-Another option is to call waject with the first argument an object to watch on:
+// Listen for "set" change on "message"
+example.on("set", "message", (target, property, value) => {
+    console.log(property, "changed to", value);
+});
 
-	var foo = {"fruit": ['apples', 'oranges', 'pears'], animals_alive: true};
+// Change "message", triggering a "set" occurrence
+example.message = "Goodnight";
+// console logs "message changed to Goodnight"
 
-	foo = waject(foo); // overwrites foo with a waject of itself. Yeeha!
+console.log(example.message); // "Goodnight"
+```
 
-You can also call the waject with setters and getters:
-	foo = waject(foo, function (obj, prop, val) {
-		console.log("Object:", obj);
-		console.log("Property:", prop);
-		console.log("Value:", val);
-	});
+#### Traps
+The returned proxy has a `get` trap and a `set` trap.
 
-Once you have a waject, you can use the mk() method to do stuff when the data changes:
+Both traps follow this order of interception:
+* **Extensions** are intercepted first.
+* * `get` will return the extension function, bound to the waject instance.
+* * `set` will return false, and log a warning:
+* * * `Waject: Ignoring set to '${prop}' property, because it's an extension.`
+* **`"*"`** property is intercepted second. `*` represents **all**.
+* * Extensions named `*` will override this functionality.
+* * `get` will return a static copy of the target object, with every `get` listener resolved.
+* * `set` will do one of two things:
+* * * If the value is a *compatible* object:
+* * * * Assign each value of the compatible object to the target object.
+* * * If the value is a non-object, or non-compatible object:
+* * * * Assign each property of the target to the new value.
+* Any other property.
+* * `get`
+* * * Default value to `target[key]`
+* * * Cycle through `get` listeners bound to `key`
+* * * Cycle through `get` listeners bound to all properties.
+* * * Return value.
+* * `set`
+* * * Cycle through `set` listeners bound to `key`
+* * * Cycle through `set` listeners bound to all properties.
+* * * Set `target[key]` to value and return it.
+# Extensions
+Extensions are used to add non-enumerable, non-configurable methods bound to future waject instances.
 
-	waject().mk(PROPERTY, VALUE, SETTER, GETTER);
-	// or
-	waject().mk({property: ...,
-		value: ...,
-		got: ...,
-		preset: ...
-	});
+Internally, extensions are stored in an object, `extensions`, with the `interceptProperty` as the property name, and the extension's function as the value bound to a waject instance.
 
-The foo.mk method will surely come in handy. 
-	foo.mk("fruit", function (obj, prop) {
-		console.log(prop + " touched!");
-	});
+**Source code:**
+```
+    let extensions = {};
 
-	foo.fruit[2]; //fruit touched!
-	// apples
+    for (let interceptProperty in this.constructor.extensions) {
+        extensions[interceptProperty] = this.constructor.extensions[interceptProperty].bind(this);
+    }
+```
 
-alternatively,
-
-	foo.mk({
-
-		property: 'fruit',
-		value: foo.fruit,
-		got: function (o, prop) {
-			console.log(prop + " touched!");
-		},
-		preset: function (o, prop, val) {
-			var old_val = o[prop];
-			console.log(prop + " changed from " + old_val + " to " + val);
-		}
-
-	});
-
-
-
-the 'mk' method takes 4 arguments. The first is the either an object representation of the arguments or the property. The second argument is the value for that propert The third value is the setter for that property, and the fourth and last value is the getter for the given propery.
-
-
-Getters provide 2 arguments: the object they are inside of and the property name.
-Setters provide 3 arguments: the object they are inside of, the property name, and the new value. Note that you may access the current value (it hasn't been overwritten yet!) before it gets set using the previous 2 arguments.
-
-Contact me if you have any questions.
+#### *`[[waject]]`*`.`**`on`**`(`*`String`*`group,(`*`String`*`property,)`*`Function`*`callback)`
